@@ -3,58 +3,63 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
+
 int main(){
-    int player_choice,computer_choice;
+    int player_choice, computer_choice;
     int is_player_win = 0;
-    time_t start_time,current_time;
+    time_t start_time, current_time;
+    
     srand((unsigned int)time(NULL));
-    printf("=====欢迎来到猜拳小游戏（限十秒内输入）======\n");
-    printf("请输入你的选择:1=石头,2=剪刀,3=布 \n");
-    while(1){
-        current_time = time(NULL);
-        if (difftime(current_time,start_time)>10){
-            printf("输入超时，游戏结束！\n");
-            return 0;
+    printf("=====Welcome to Rock-Paper-Scissors (input within 10 seconds)======\n");
+    printf("Please enter your choice: 1=Rock, 2=Scissors, 3=Paper \n");
+    
+    while (!is_player_win) {
+        // Reset timer for each round
+        start_time = time(NULL);
+        printf("Please enter your choice: ");
+        
+        // Wait for user input with timeout check
+        int input_received = 0;
+        while (!input_received) {
+            current_time = time(NULL);
+            if (difftime(current_time, start_time) > 10) {
+                printf("\nTime out! Game over!\n");
+                return 0;
+            }
+            
+            // Check if input is available
+            if (scanf("%d", &player_choice) == 1) {
+                input_received = 1;
+            }
         }
-    }
-    while (!is_player_win){
-        printf("请输入你的选择：");
-        scanf("%d",&player_choice);
-        if(player_choice<1 || player_choice>3){
-            printf("输入错误，请重新输入！\n");
+        
+        if (player_choice < 1 || player_choice > 3) {
+            printf("Invalid input, please try again!\n");
             continue;
         }
         
-        computer_choice = rand()%3+1;
-        if(computer_choice==1)printf("石头\n");
-        else if(computer_choice==2)printf("剪刀\n");
-        else if(computer_choice==3)printf("布\n");
-        if(player_choice==computer_choice){
-            printf("平局！\n");
+        // Computer's choice
+        computer_choice = rand() % 3 + 1;
+        printf("Computer chooses: ");
+        if (computer_choice == 1) printf("Rock\n");
+        else if (computer_choice == 2) printf("Scissors\n");
+        else printf("Paper\n");
+        
+        // Determine the result
+        if (player_choice == computer_choice) {
+            printf("It's a tie! Let's try again!\n");
         }
-        else if(player_choice==1 && computer_choice==2){
-            printf("你输了！\n");
-        }
-        else if(player_choice==1 && computer_choice==3){
-            printf("你赢了！\n");
+        else if ((player_choice == 1 && computer_choice == 2) || 
+                 (player_choice == 2 && computer_choice == 3) || 
+                 (player_choice == 3 && computer_choice == 1)) {
+            printf("You win!\n");
             is_player_win = 1;
         }
-        else if(player_choice==2 && computer_choice==1){
-            printf("你赢了！\n");
-            is_player_win = 1;
-        }
-        else if(player_choice==2 && computer_choice==3){
-            printf("你输了！\n");
-        }
-        else if(player_choice==3 && computer_choice==1){
-            printf("你输了！\n");
-        }
-        else if(player_choice==3 && computer_choice==2){
-            printf("你赢了！\n");
-            is_player_win = 1;
+        else {
+            printf("You lose! Let's try again!\n");
         }
     }
 
+    printf("Congratulations on your victory! Game over!\n");
     return 0;
-
 }
